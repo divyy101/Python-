@@ -81,7 +81,6 @@ plt.grid()
 plt.show()
 
 
-# Q4. Highest Class X pass percentage
 
 print("\nQ4")
 
