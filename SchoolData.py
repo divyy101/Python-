@@ -1,244 +1,221 @@
+import matplotlib
+matplotlib.use("Agg")
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Read CSV
 df = pd.read_csv("EducationDataset_2023-24.csv")
 
-# Information about dataset
-print(df.info())
+df.info()
 print(df.head())
 
 
-# Q1. Highest and lowest number of schools
+# Q1: Find the district with the highest and lowest number of schools.
 
-print("\nQ1")
+highest = df["No of Schools - Total"].max()
+lowest = df["No of Schools - Total"].min()
 
-max_schools = df["No of Schools - Total"].max()
-min_schools = df["No of Schools - Total"].min()
-
-print("Highest number of schools:", max_schools)
-print("Lowest number of schools:", min_schools)
+print("Highest schools:", highest)
+print("Lowest schools:", lowest)
 
 print("District with highest schools:",
-      df["District"][df["No of Schools - Total"] == max_schools].values)
+      df[df["No of Schools - Total"] == highest]["District"].values)
 
 print("District with lowest schools:",
-      df["District"][df["No of Schools - Total"] == min_schools].values)
+      df[df["No of Schools - Total"] == lowest]["District"].values)
 
 
-# Q2. Highest total student enrollment
+# Q2: Find the district with the highest total student enrollment.
 
-print("\nQ2")
+highest_students = df["No of Students - Total"].max()
 
-max_students = df["No of Students - Total"].max()
-
-print("Highest student enrollment:", max_students)
+print("Highest students:", highest_students)
 
 print("District:",
-      df["District"][df["No of Students - Total"] == max_students].values)
+      df[df["No of Students - Total"] == highest_students]["District"].values)
 
 
-# Q3. Largest gender difference
-
-print("\nQ3")
+# Q3: Find the district with the largest difference between boys and girls.
 
 difference = np.abs(
     df["No of Students - Boys"] -
     df["No of Students - Girls"]
 )
 
-max_difference = difference.max()
+highest_difference = difference.max()
 
-print("Largest gender difference:", max_difference)
+print("Largest gender difference:", highest_difference)
 
 print("District:",
-      df["District"][difference == max_difference].values)
+      df[difference == highest_difference]["District"].values)
 
 
-# Graph: Boys vs Girls
-
-plt.plot(
-    df["District"],
-    df["No of Students - Boys"],
-    label="Boys"
-)
-
-plt.plot(
-    df["District"],
-    df["No of Students - Girls"],
-    label="Girls"
-)
-
-plt.xlabel("District")
-plt.ylabel("Students")
-plt.title("Boys vs Girls")
-
-plt.xticks(rotation=45)
-plt.legend()
-plt.grid()
-
-plt.show()
-
-
-
-print("\nQ4")
+# Q4: Find the district with the highest Class X pass percentage.
 
 class10 = " PASS PERCENTAGE IN CLASS X - \n(Before Compt.) - 2023-24"
 
-max_class10 = df[class10].max()
+highest_class10 = df[class10].max()
 
-print("Highest Class X pass percentage:", max_class10)
-
-print("District:",
-      df["District"][df[class10] == max_class10].values)
-
-
-# Q5. Highest Class XII pass percentage
-
-print("\nQ5")
-
-class12 = " PASS PERCENTAGE IN CLASS XII - \n(Before Compt.) - 2023-24"
-
-max_class12 = df[class12].max()
-
-print("Highest Class XII pass percentage:", max_class12)
+print("Highest Class X:", highest_class10)
 
 print("District:",
-      df["District"][df[class12] == max_class12].values)
+      df[df[class10] == highest_class10]["District"].values)
 
 
-# Q6. Compare Class X and Class XII
+# Q5: Find the district with the highest Class XII pass percentage.
 
-print("\nQ6")
+class12 = "PASS PERCENTAGE IN CLASS XII - (Before Compt.) - 2023-24"
 
-plt.plot(
-    df["District"],
-    df[class10],
-    label="Class X"
-)
+highest_class12 = df[class12].max()
 
-plt.plot(
-    df["District"],
-    df[class12],
-    label="Class XII"
-)
+print("Highest Class XII:", highest_class12)
 
-plt.xlabel("District")
-plt.ylabel("Pass Percentage")
-plt.title("Class X vs Class XII")
-
-plt.xticks(rotation=45)
-plt.legend()
-plt.grid()
-
-plt.show()
+print("District:",
+      df[df[class12] == highest_class12]["District"].values)
 
 
-# Q7. Schools vs Class X pass percentage
-
-print("\nQ7")
-
-plt.scatter(
-    df["No of Schools - Total"],
-    df[class10]
-)
-
-plt.xlabel("Number of Schools")
-plt.ylabel("Class X Pass Percentage")
-plt.title("Schools vs Class X Pass Percentage")
-
-plt.grid()
-plt.show()
-
-correlation = np.corrcoef(
-    df["No of Schools - Total"],
-    df[class10]
-)
-
-print("Correlation:")
-print(correlation)
-
-
-# Q8. Students vs Class X pass percentage
-
-print("\nQ8")
-
-plt.scatter(
-    df["No of Students - Total"],
-    df[class10]
-)
-
-plt.xlabel("Total Students")
-plt.ylabel("Class X Pass Percentage")
-plt.title("Students vs Class X Pass Percentage")
-
-plt.grid()
-plt.show()
-
-correlation = np.corrcoef(
-    df["No of Students - Total"],
-    df[class10]
-)
-
-print("Correlation:")
-print(correlation)
-
-
-# Q9. Students per school
-
-print("\nQ9")
+# Q6: Compare Class X and Class XII pass percentages using a line graph.
 
 df["Students Per School"] = (
     df["No of Students - Total"] /
     df["No of Schools - Total"]
 )
 
-max_ratio = df["Students Per School"].max()
+highest_ratio = df["Students Per School"].max()
 
-print("Highest students per school:", max_ratio)
-
-print("District:",
-      df["District"][
-          df["Students Per School"] == max_ratio
-      ].values)
-
-print("Correlation with Class X:")
+print("Highest students per school:", highest_ratio)
 
 print(
-    np.corrcoef(
-        df["Students Per School"],
-        df[class10]
-    )
+    "District:",
+    df[df["Students Per School"] == highest_ratio]["District"].values
 )
 
 
-# Graph
+# Q7: Find the relationship between number of schools and Class X pass percentage.
 
-plt.bar(
+correlation1 = np.corrcoef(
+    df["No of Schools - Total"],
+    df[class10]
+)
+
+print("Schools and Class X Correlation:")
+print(correlation1)
+
+
+# Q8: Find the relationship between total students and Class X pass percentage.
+
+correlation2 = np.corrcoef(
+    df["No of Students - Total"],
+    df[class10]
+)
+
+print("Students and Class X Correlation:")
+print(correlation2)
+
+
+# Q9: Calculate students per school and find its relationship with Class X pass percentage.
+
+correlation3 = np.corrcoef(
+    df["Students Per School"],
+    df[class10]
+)
+
+print("Students Per School and Class X Correlation:")
+print(correlation3)
+
+
+# Q10: Display the highest student enrollment, highest Class X pass percentage, and highest students per school.
+
+print("Highest students:", highest_students)
+print("Highest Class X:", highest_class10)
+print("Highest students per school:", highest_ratio)
+
+
+fig, ax = plt.subplots(3, 2, figsize=(16, 12))
+
+
+ax[0, 0].plot(
     df["District"],
-    df["Students Per School"]
+    df["No of Students - Boys"],
+    label="Boys"
 )
 
-plt.xlabel("District")
-plt.ylabel("Students Per School")
-plt.title("Students Per School")
+ax[0, 0].plot(
+    df["District"],
+    df["No of Students - Girls"],
+    label="Girls"
+)
 
-plt.xticks(rotation=45)
-plt.grid()
+ax[0, 0].set_title("Boys vs Girls")
+ax[0, 0].set_xlabel("District")
+ax[0, 0].set_ylabel("Students")
+ax[0, 0].tick_params(axis="x", rotation=45)
+ax[0, 0].legend()
+ax[0, 0].grid(True)
 
-plt.show()
+
+ax[0, 1].plot(
+    df["District"],
+    df[class10],
+    label="Class X"
+)
+
+ax[0, 1].plot(
+    df["District"],
+    df[class12],
+    label="Class XII"
+)
+
+ax[0, 1].set_title("Class X vs Class XII")
+ax[0, 1].set_xlabel("District")
+ax[0, 1].set_ylabel("Pass Percentage")
+ax[0, 1].tick_params(axis="x", rotation=45)
+ax[0, 1].legend()
+ax[0, 1].grid(True)
 
 
-# Q10. Three observations
+ax[1, 0].scatter(
+    df["No of Schools - Total"],
+    df[class10]
+)
 
-print("\nQ10")
+ax[1, 0].set_title("Schools vs Class X")
+ax[1, 0].set_xlabel("Number of Schools")
+ax[1, 0].set_ylabel("Class X Pass Percentage")
+ax[1, 0].grid(True)
 
-print("1. Highest student enrollment:",
-      df["No of Students - Total"].max())
 
-print("2. Highest Class X pass percentage:",
-      df[class10].max())
+ax[1, 1].scatter(
+    df["No of Students - Total"],
+    df[class10]
+)
 
-print("3. Highest students per school:",
-      df["Students Per School"].max())
+ax[1, 1].set_title("Students vs Class X")
+ax[1, 1].set_xlabel("Total Students")
+ax[1, 1].set_ylabel("Class X Pass Percentage")
+ax[1, 1].grid(True)
+
+
+ax[2, 0].bar(
+    df["District"],
+    df["Students Per School"],
+    color="skyblue",
+    width=0.6
+)
+
+ax[2, 0].set_title("Students Per School")
+ax[2, 0].set_xlabel("District")
+ax[2, 0].set_ylabel("Students Per School")
+ax[2, 0].tick_params(axis="x", rotation=45)
+ax[2, 0].grid(True)
+
+
+ax[2, 1].axis("off")
+
+
+plt.tight_layout()
+
+plt.savefig("all_graphs.png")
+
+plt.close(fig)
